@@ -1,8 +1,7 @@
 """Smoke tests for the QuantOS repository foundation.
 
 These tests verify the package skeleton is importable and correctly
-versioned. They intentionally contain no business logic, consistent with
-Milestone 1 scope.
+versioned. They intentionally contain no business logic.
 """
 
 import importlib
@@ -10,14 +9,21 @@ import importlib
 import quant_os
 
 EXPECTED_SUBPACKAGES = (
+    "ai",
     "core",
     "data",
-    "trading",
-    "risk",
-    "reporting",
-    "ai",
-    "portfolio",
+    "events",
+    "execution",
     "infrastructure",
+    "kernel",
+    "macro",
+    "market",
+    "news",
+    "portfolio",
+    "reporting",
+    "risk",
+    "strategy",
+    "trading",
     "utils",
 )
 
