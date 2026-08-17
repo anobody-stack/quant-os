@@ -67,7 +67,7 @@ class Application:
         for dependency in module.metadata.dependencies:
             if dependency not in self._modules:
                 raise ModuleDependencyError(
-                    f"Module {name!r} depends on {dependency!r}, " "which has not been registered",
+                    f"Module {name!r} depends on {dependency!r}, which has not been registered",
                     context={"module": name, "dependency": dependency},
                 )
         self._modules[name] = module

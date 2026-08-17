@@ -19,7 +19,10 @@ QuantOS aims to become a unified operating layer for systematic and discretionar
 
 QuantOS is organized as a modular monolith, with clear separation of concerns across functional domains. Each module under `quant_os/` owns a distinct responsibility and is designed to be independently testable.
 
-At this stage (repository foundation), no business logic has been implemented. The structure below establishes the boundaries that future milestones will fill in.
+At this stage (Milestones 1–5 complete), the core infrastructure, event
+system, application kernel, and Market Data Engine are implemented and
+tested. The structure below shows the boundaries the remaining milestones
+will fill in.
 
 ## Repository Structure
 
@@ -28,12 +31,11 @@ quant-os/
 │
 ├── src/
 │   └── quant_os/
-│       ├── core/            # Core infrastructure: config, logging, exceptions, time, identifiers, types, validation
+│       ├── core/             # Core infrastructure: config, logging, exceptions, time, identifiers, types, validation
 │       ├── kernel/           # Application kernel: DI container, registry, modules, lifecycle, health, bootstrap
-│       ├── events/          # Event system: Event, EventBus, AsyncEventBus, domain events
+│       ├── events/           # Event system: Event, EventBus, AsyncEventBus, domain events
 │       ├── market/           # Market Data Engine: models, interfaces, mock provider, repositories, cache, service
-│       ├── data/             # Providers, ingestion, persistence, normalization, storage
-│       ├── market/           # Market data domain (provider/repository interfaces)
+│       ├── data/             # Providers, ingestion, persistence, normalization, storage (placeholder)
 │       ├── news/             # News domain (provider/repository interfaces)
 │       ├── macro/            # Macro/economic calendar domain (provider/repository interfaces)
 │       ├── trading/          # Order management and execution (legacy placeholder)
@@ -317,8 +319,7 @@ class NewsModule(Module):
             capabilities=(Capability.NEWS,),
         )
 
-    async def on_start(self) -> None:
-        ...  # begin polling/streaming
+    async def on_start(self) -> None: ...  # begin polling/streaming
 
 
 app = Application()
@@ -340,6 +341,7 @@ module should call `get_settings()` directly. A module simply declares
 class NewsModule(Module):
     def __init__(self, settings: Settings) -> None:
         self._settings = settings
+
     ...
 ```
 
@@ -359,7 +361,7 @@ crashing the whole report.
 
 ```python
 report = await app.run_health_checks()
-print(report.overall_status)          # e.g. HealthStatus.DEGRADED
+print(report.overall_status)  # e.g. HealthStatus.DEGRADED
 print(report.results["news"].status)  # per-module detail
 ```
 
@@ -376,13 +378,6 @@ some registered module do X" without depending on a concrete class.
 define the shape future plugin infrastructure will conform to. No
 loading, discovery, or sandboxing mechanism exists yet — these are
 interfaces only.
-
-
-
-The following domains currently expose **interfaces only** — no concrete
-implementation, storage, or scheduling logic exists yet. This keeps
-provider- and backend-specific detail out of the domain layer from day
-one.
 
 ## Market Data Engine (Milestone 5)
 
@@ -448,7 +443,10 @@ service = MarketService(
 await service.connect()
 quote = await service.fetch_and_ingest_quote(Symbol(code="XAUUSD"))
 candles = await service.get_historical_candles(
-    Symbol(code="XAUUSD"), TimeFrame.M1, start=..., end=...,
+    Symbol(code="XAUUSD"),
+    TimeFrame.M1,
+    start=...,
+    end=...,
 )
 ```
 
@@ -471,7 +469,6 @@ one.
 
 | Domain | Provider interface | Repository interface |
 |---|---|---|
-| Market data | `quant_os.market.provider.MarketDataProvider` | `quant_os.market.repository.MarketRepository` |
 | News | `quant_os.news.provider.NewsProvider` | `quant_os.news.repository.NewsRepository` |
 | Macro/calendar | `quant_os.macro.provider.MacroProvider` | `quant_os.macro.repository.MacroRepository` |
 
@@ -507,7 +504,7 @@ Subsequent milestones will incrementally introduce:
 
 - Concrete provider implementations (market data feeds, news sources,
   economic calendars)
-- In-memory and persistent repository implementations
+- Persistent repository implementations
 - Concrete scheduler implementation
 - News/macro classification, asset mapping, and importance/confidence
   scoring

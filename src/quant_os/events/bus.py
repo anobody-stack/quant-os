@@ -33,7 +33,7 @@ class EventBus(Protocol):
 
     This is a pure interface: no transport, persistence, or delivery
     guarantees are implied. Concrete implementations (e.g.
-    :class:`~quant_os.events.bus.AsyncEventBus`) define those semantics.
+    :class:`~quant_os.events.async_bus.AsyncEventBus`) define those semantics.
     """
 
     async def publish(self, event: Event) -> None:
