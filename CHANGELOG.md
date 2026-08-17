@@ -7,6 +7,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Removed
+
+- Legacy Milestone 3 flat market interfaces `quant_os/market/provider.py`
+  and `quant_os/market/repository.py` (and their structural-conformance
+  test). Milestone 5's documented restructure claimed these were removed,
+  but the files were still present, leaving two unrelated Protocols named
+  `MarketDataProvider`/`MarketRepository` in the same package. The M5
+  contracts in `quant_os.market.interfaces` are the single canonical set.
+
+### Fixed
+
+- `.env.example` used `QUANT_OS_ENV`, but configuration loading reads
+  `QUANT_OS_ENVIRONMENT`; renamed so the example file actually works.
+- `tests/unit/test_package_structure.py` expected only the Milestone 1
+  subpackage set; updated to the real current layout (adds `events`,
+  `kernel`, `market`, `news`, `macro`, `strategy`, `execution`).
+- README: removed a duplicated `market/` entry in the repository
+  structure tree, a stale "no business logic has been implemented"
+  claim, an orphaned paragraph fragment, and a Domain Interfaces table
+  row pointing at the removed M3 market interfaces.
+- `quant_os.events.bus` docstring referenced
+  `quant_os.events.bus.AsyncEventBus`; corrected to
+  `quant_os.events.async_bus.AsyncEventBus`.
+- Applied `ruff format` normalization to `kernel/application.py`
+  (implicit string concatenation) and README code blocks.
+
 ### Added
 
 - Market Data Engine (Milestone 5): `quant_os.market` — the single
@@ -96,7 +122,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Scheduler interface (no implementation):
   `quant_os.infrastructure.scheduler.Scheduler`.
 - `pytest-asyncio` added as a dev dependency; pytest configured with
-  `asyncio_mode = "strict"`.
+  `asyncio_mode = "auto"`.
 
 ### Changed
 
